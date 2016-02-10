@@ -1,0 +1,5 @@
+{
+  "subscription_user": "user",
+  "subscription_password": "password",
+  "subscription_pool": "poolid"
+}

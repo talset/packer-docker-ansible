@@ -1,0 +1,33 @@
+{
+    "builders":[{
+        "type": "docker",
+        "image": "rhel7",
+        "export_path": "/tmp/image.tar"
+    }],
+    "provisioners":[
+        {
+            "type": "shell",
+            "inline": [
+                "subscription-manager register --username={{user `subscription_user`}} --password='{{user `subscription_password`}}'",
+                "subscription-manager attach --pool={{user `subscription_pool`}}",
+                "subscription-manager repos --disable='*'",
+                "subscription-manager repos --enable='rhel-7-server-rpms' --enable='rhel-7-server-extras-rpms' --enable='rhel-7-server-optional-rpms'",
+
+                "yum -y install http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm",
+                "yum --enablerepo=epel install ansible -y"
+            ]
+        },
+        {
+            "type": "ansible-local",
+            "extra_arguments": "--tags monitoring-client",
+            "playbook_file": "playbooks/local.yml"
+        }
+    ],
+    "post-processors": [
+        {
+            "type": "docker-import",
+            "repository": "talset/packer-ansible",
+            "tag": "0.1"
+        }
+    ]
+}

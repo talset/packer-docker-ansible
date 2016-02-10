@@ -1,0 +1,25 @@
+- hosts: 127.0.0.1
+  user: root
+  tasks:
+
+    - name: upgrade all packages
+      yum: name=* state=latest
+
+    - name: install common packages
+      yum:
+        name: "{{ item }}"
+        state: installed
+      with_items:
+           - tcpdump
+           - nmap-ncat
+           - vim
+           - wget
+           - httpd-tools
+           - docker-python
+           - iptables-services
+           - git
+           - screen
+           - bind-utils
+
+    - name: Unregister
+      shell: subscription-manager remove --all; subscription-manager unregister; subscription-manager clean
